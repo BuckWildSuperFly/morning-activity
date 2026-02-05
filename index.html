@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morning Activity Randomizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">What To Do As I First Enter My New Day</h1>
+
+        <button id="randomizeBtn" class="button">
+            What should I do this morning?
+        </button>
+
+        <div id="activityDisplay" class="activity-display">
+            <p class="activity-text"></p>
+        </div>
+
+        <!-- Activity Management Section -->
+        <div class="management-section">
+            <h2 class="management-title">Manage Activities</h2>
+
+            <!-- Add New Activity -->
+            <div class="add-activity">
+                <input
+                    type="text"
+                    id="newActivityInput"
+                    class="activity-input"
+                    placeholder="Enter new activity..."
+                    maxlength="100"
+                >
+                <button id="addActivityBtn" class="add-button">Add Activity</button>
+            </div>
+
+            <!-- Activities List -->
+            <div class="activities-list">
+                <h3 class="list-title">Current Activities</h3>
+                <ul id="activitiesList" class="list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

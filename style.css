@@ -1,0 +1,258 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.title {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
+
+.button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    font-size: 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.button:active {
+    transform: translateY(0);
+}
+
+.activity-display {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.activity-text {
+    font-size: 24px;
+    color: #667eea;
+    font-weight: 600;
+    line-height: 1.5;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    .container {
+        padding: 30px 20px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .button {
+        font-size: 16px;
+        padding: 14px 28px;
+    }
+
+    .activity-text {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 400px) {
+    .title {
+        font-size: 20px;
+    }
+
+    .activity-text {
+        font-size: 18px;
+    }
+}
+
+/* Activity Management Section */
+.management-section {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 2px solid #e9ecef;
+}
+
+.management-title {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Add Activity Form */
+.add-activity {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.activity-input {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.activity-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.add-button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.add-button:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.add-button:active {
+    transform: translateY(0);
+}
+
+/* Activities List */
+.activities-list {
+    text-align: left;
+}
+
+.list-title {
+    color: #555;
+    font-size: 18px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.list {
+    list-style: none;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+}
+
+.list-item:hover {
+    background: #e9ecef;
+}
+
+.activity-name {
+    color: #333;
+    font-size: 16px;
+    flex: 1;
+}
+
+.delete-button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-weight: 600;
+}
+
+.delete-button:hover {
+    background: #c82333;
+}
+
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Mobile responsiveness for management section */
+@media (max-width: 600px) {
+    .management-title {
+        font-size: 20px;
+    }
+
+    .add-activity {
+        flex-direction: column;
+    }
+
+    .add-button {
+        width: 100%;
+    }
+
+    .list-item {
+        padding: 10px 12px;
+    }
+
+    .activity-name {
+        font-size: 14px;
+    }
+
+    .delete-button {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+}
