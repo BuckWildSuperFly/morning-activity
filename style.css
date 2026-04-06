@@ -14,6 +14,7 @@ body {
     padding: 40px 20px;
 }
 
+/* ── Container ── */
 .container {
     background: white;
     border-radius: 20px;
@@ -27,10 +28,74 @@ body {
 .title {
     color: #333;
     font-size: 28px;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
     line-height: 1.4;
 }
 
+/* ── Loading Screen ── */
+.loading-text {
+    color: #999;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* ── Auth Screen ── */
+.auth-subtitle {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.auth-form {
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.auth-input {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.auth-error {
+    color: #dc3545;
+    font-size: 14px;
+    min-height: 20px;
+    margin-bottom: 8px;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.auth-buttons .button {
+    flex: 1;
+    margin-bottom: 0;
+    font-size: 16px;
+    padding: 14px 20px;
+}
+
+.button-secondary {
+    background: #6c757d;
+}
+
+.button-secondary:hover {
+    box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
+}
+
+/* ── Shared Button ── */
 .button {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -53,14 +118,40 @@ body {
     transform: translateY(0);
 }
 
+/* ── App Header ── */
+.app-header {
+    position: relative;
+}
+
+.logout-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.logout-btn:hover {
+    color: #dc3545;
+    background: #f8f9fa;
+}
+
+/* ── Activity Display ── */
 .activity-display {
-    min-height: 100px;
+    min-height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f8f9fa;
     border-radius: 15px;
     padding: 20px;
+    margin-bottom: 30px;
 }
 
 .activity-text {
@@ -68,6 +159,9 @@ body {
     color: #667eea;
     font-weight: 600;
     line-height: 1.5;
+}
+
+.fade-in {
     animation: fadeIn 0.5s ease-in;
 }
 
@@ -82,40 +176,151 @@ body {
     }
 }
 
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-    .container {
-        padding: 30px 20px;
-    }
-
-    .title {
-        font-size: 24px;
-    }
-
-    .button {
-        font-size: 16px;
-        padding: 14px 28px;
-    }
-
-    .activity-text {
-        font-size: 20px;
-    }
+/* ── Accountability Section ── */
+.accountability-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
 }
 
-@media (max-width: 400px) {
-    .title {
-        font-size: 20px;
-    }
-
-    .activity-text {
-        font-size: 18px;
-    }
+.section-title {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 12px;
 }
 
-/* Activity Management Section */
+.accountability-display {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 12px;
+}
+
+.days-count {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 24px;
+}
+
+.days-goal {
+    font-weight: 700;
+    color: #333;
+}
+
+.progress-bar {
+    height: 14px;
+    background: #e0e0e0;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 7px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+.progress-fill.complete {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+/* ── Calendar ── */
+.calendar-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.calendar-title {
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.calendar-nav {
+    background: none;
+    border: 2px solid #e0e0e0;
+    color: #667eea;
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.calendar-nav:hover {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.calendar-day-headers {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.calendar-day-headers span {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #999;
+    padding: 4px 0;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    cursor: default;
+}
+
+.calendar-cell.empty {
+    visibility: hidden;
+}
+
+.calendar-cell.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 700;
+}
+
+.calendar-cell.today:not(.active) {
+    border: 2px solid #667eea;
+    color: #667eea;
+    font-weight: 700;
+}
+
+/* ── Management Section ── */
 .management-section {
-    margin-top: 40px;
-    padding-top: 40px;
+    margin-top: 10px;
+    padding-top: 30px;
     border-top: 2px solid #e9ecef;
 }
 
@@ -125,11 +330,78 @@ body {
     margin-bottom: 20px;
 }
 
-/* Add Activity Form */
+/* Goal Setting */
+.goal-setting {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.goal-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.goal-input {
+    width: 60px;
+    padding: 8px 10px;
+    font-size: 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    text-align: center;
+    font-family: inherit;
+}
+
+.goal-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.goal-text {
+    font-size: 16px;
+    color: #555;
+}
+
+.goal-select {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.goal-select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.save-goal-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.save-goal-btn:hover {
+    background: #5a6fd6;
+    transform: translateY(-1px);
+}
+
+/* Add Activity */
 .add-activity {
     display: flex;
     gap: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .activity-input {
@@ -170,19 +442,17 @@ body {
 }
 
 /* Activities List */
-.activities-list {
-    text-align: left;
-}
-
 .list-title {
+    text-align: left;
     color: #555;
     font-size: 18px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     font-weight: 600;
 }
 
 .list {
     list-style: none;
+    text-align: left;
 }
 
 .list-item {
@@ -216,6 +486,8 @@ body {
     cursor: pointer;
     transition: background 0.2s;
     font-weight: 600;
+    margin-left: 10px;
+    flex-shrink: 0;
 }
 
 .delete-button:hover {
@@ -229,8 +501,33 @@ body {
     font-style: italic;
 }
 
-/* Mobile responsiveness for management section */
+/* ── Mobile Responsiveness ── */
 @media (max-width: 600px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .container {
+        padding: 24px 16px;
+    }
+
+    .title {
+        font-size: 22px;
+    }
+
+    .button {
+        font-size: 16px;
+        padding: 14px 24px;
+    }
+
+    .activity-text {
+        font-size: 20px;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+    }
+
     .management-title {
         font-size: 20px;
     }
@@ -254,5 +551,23 @@ body {
     .delete-button {
         font-size: 12px;
         padding: 5px 10px;
+    }
+
+    .goal-setting {
+        gap: 6px;
+    }
+
+    .calendar-cell {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 400px) {
+    .title {
+        font-size: 18px;
+    }
+
+    .activity-text {
+        font-size: 18px;
     }
 }

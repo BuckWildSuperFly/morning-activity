@@ -3,45 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Morning Activity Randomizer</title>
+    <title>Enter The Day Decider</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">What To Do As I First Enter My New Day</h1>
 
-        <button id="randomizeBtn" class="button">
+    <!-- Loading Screen (shown while Firebase checks auth state) -->
+    <div id="loading-screen" class="container">
+        <h1 class="title">Enter The Day Decider</h1>
+        <p class="loading-text">Loading...</p>
+    </div>
+
+    <!-- Auth Screen (login / register) -->
+    <div id="auth-screen" class="container" style="display: none;">
+        <h1 class="title">Enter The Day Decider</h1>
+        <p class="auth-subtitle">Log in or create an account to get started.</p>
+
+        <div class="auth-form">
+            <input type="email" id="auth-email" class="auth-input" placeholder="Email">
+            <input type="password" id="auth-password" class="auth-input" placeholder="Password (min 6 characters)">
+            <p id="auth-error" class="auth-error"></p>
+            <div class="auth-buttons">
+                <button id="login-btn" class="button">Log In</button>
+                <button id="register-btn" class="button button-secondary">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App (shown when logged in) -->
+    <div id="app-screen" class="container" style="display: none;">
+        <div class="app-header">
+            <h1 class="title">What To Do As I First Enter My New Day</h1>
+            <button id="logout-btn" class="logout-btn">Log out</button>
+        </div>
+
+        <button id="randomize-btn" class="button">
             What should I do this morning?
         </button>
 
-        <div id="activityDisplay" class="activity-display">
-            <p class="activity-text"></p>
+        <div id="activity-display" class="activity-display">
+            <p class="activity-text" id="activity-text"></p>
         </div>
 
-        <!-- Activity Management Section -->
+        <!-- Accountability Tracker -->
+        <div id="accountability-section" class="accountability-section">
+            <h2 class="section-title">Accountability</h2>
+            <div class="accountability-display">
+                <span id="days-count" class="days-count">0</span>
+                <span> of </span>
+                <span id="days-goal" class="days-goal">5</span>
+                <span> days this </span>
+                <span id="goal-period-label">week</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Monthly Calendar -->
+        <div class="calendar-section">
+            <div class="calendar-header">
+                <button id="prev-month" class="calendar-nav">&larr;</button>
+                <h3 id="calendar-title" class="calendar-title">April 2026</h3>
+                <button id="next-month" class="calendar-nav">&rarr;</button>
+            </div>
+            <div class="calendar-day-headers">
+                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+            <div id="calendar-days" class="calendar-days"></div>
+        </div>
+
+        <!-- Manage Activities -->
         <div class="management-section">
             <h2 class="management-title">Manage Activities</h2>
+
+            <!-- Goal Setting -->
+            <div class="goal-setting">
+                <label class="goal-label">Goal:</label>
+                <input type="number" id="goal-days-input" class="goal-input" min="1" max="366" value="5">
+                <span class="goal-text">days per</span>
+                <select id="goal-period-select" class="goal-select">
+                    <option value="week">Week</option>
+                    <option value="month">Month</option>
+                    <option value="year">Year</option>
+                </select>
+                <button id="save-goal-btn" class="save-goal-btn">Save</button>
+            </div>
 
             <!-- Add New Activity -->
             <div class="add-activity">
                 <input
                     type="text"
-                    id="newActivityInput"
+                    id="activity-input"
                     class="activity-input"
-                    placeholder="Enter new activity..."
+                    placeholder="Add a new activity..."
                     maxlength="100"
                 >
-                <button id="addActivityBtn" class="add-button">Add Activity</button>
+                <button id="add-btn" class="add-button">Add</button>
             </div>
 
-            <!-- Activities List -->
-            <div class="activities-list">
-                <h3 class="list-title">Current Activities</h3>
-                <ul id="activitiesList" class="list"></ul>
-            </div>
+            <h3 class="list-title">Current Activities</h3>
+            <ul id="activities-list" class="list"></ul>
         </div>
     </div>
 
+    <!-- Firebase SDK (compat for simplicity, no build step needed) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
