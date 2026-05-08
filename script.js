@@ -33,6 +33,10 @@ let currentUser = null;
 let userData = null;
 let calendarMonth = new Date().getMonth();
 let calendarYear = new Date().getFullYear();
+let pendingActivity = null;
+let pendingTimestamp = null;
+let selectedStatus = null;
+let selectedCalendarDate = null;
 
 // ─── DOM Elements ───
 const loadingScreen = document.getElementById('loading-screen');
@@ -61,6 +65,11 @@ const saveGoalBtn = document.getElementById('save-goal-btn');
 const activityInput = document.getElementById('activity-input');
 const addBtn = document.getElementById('add-btn');
 const activitiesList = document.getElementById('activities-list');
+const completionSection = document.getElementById('completion-section');
+const completedBtn = document.getElementById('completed-btn');
+const failureBtn = document.getElementById('failure-btn');
+const enterBtn = document.getElementById('enter-btn');
+const dayLogDisplay = document.getElementById('day-log-display');
 
 
 // ═══════════════════════════════════════════
@@ -79,6 +88,10 @@ auth.onAuthStateChanged(async (user) => {
     } else {
         currentUser = null;
         userData = null;
+        pendingActivity = null;
+        pendingTimestamp = null;
+        selectedStatus = null;
+        selectedCalendarDate = null;
         authScreen.style.display = 'block';
         appScreen.style.display = 'none';
     }
@@ -119,7 +132,8 @@ registerBtn.addEventListener('click', async () => {
             activities: DEFAULT_ACTIVITIES,
             goalDays: 5,
             goalPeriod: 'week',
-            logDates: []
+            logDates: [],
+            activityLogs: []
         });
     } catch (e) {
         authError.textContent = friendlyError(e.code);
@@ -171,14 +185,15 @@ async function loadUserData() {
 
     if (docSnap.exists) {
         userData = docSnap.data();
+        if (!userData.activityLogs) userData.activityLogs = [];
     } else {
-        // Safety net: create default doc if it doesn't exist
         userData = {
             email: currentUser.email,
             activities: DEFAULT_ACTIVITIES,
             goalDays: 5,
             goalPeriod: 'week',
-            logDates: []
+            logDates: [],
+            activityLogs: []
         };
         await docRef.set(userData);
     }
@@ -209,30 +224,74 @@ function renderApp() {
 //  RANDOM ACTIVITY BUTTON
 // ═══════════════════════════════════════════
 
-randomizeBtn.addEventListener('click', async () => {
+randomizeBtn.addEventListener('click', () => {
+    if (pendingActivity) return;
+
     if (!userData || userData.activities.length === 0) {
         activityText.textContent = 'No activities yet — add some below!';
         return;
     }
 
-    // Pick a random activity
     const idx = Math.floor(Math.random() * userData.activities.length);
-    const activity = userData.activities[idx];
+    pendingActivity = userData.activities[idx];
+    pendingTimestamp = new Date().toISOString();
+    selectedStatus = null;
 
-    // Show it with animation
-    activityText.textContent = activity;
+    activityText.textContent = pendingActivity;
     activityDisplay.classList.remove('fade-in');
-    void activityDisplay.offsetWidth; // force reflow to restart animation
+    void activityDisplay.offsetWidth;
     activityDisplay.classList.add('fade-in');
 
-    // Log today (only counts once per day thanks to arrayUnion)
+    completionSection.classList.add('visible');
+    completedBtn.classList.remove('selected-completed');
+    failureBtn.classList.remove('selected-failure');
+    randomizeBtn.disabled = true;
+});
+
+completedBtn.addEventListener('click', () => {
+    selectedStatus = 'completed';
+    completedBtn.classList.add('selected-completed');
+    failureBtn.classList.remove('selected-failure');
+});
+
+failureBtn.addEventListener('click', () => {
+    selectedStatus = 'failure';
+    completedBtn.classList.remove('selected-completed');
+    failureBtn.classList.remove('selected-failure');
+    void failureBtn.offsetWidth;
+    failureBtn.classList.add('selected-failure');
+});
+
+enterBtn.addEventListener('click', async () => {
+    if (!selectedStatus || !pendingActivity) return;
+
     const today = todayString();
+    const logEntry = {
+        activity: pendingActivity,
+        status: selectedStatus,
+        timestamp: pendingTimestamp,
+        date: today
+    };
+
+    if (!userData.activityLogs) userData.activityLogs = [];
+    userData.activityLogs.push(logEntry);
+
     if (!userData.logDates.includes(today)) {
         userData.logDates.push(today);
-        await db.collection('users').doc(currentUser.uid).update({
-            logDates: firebase.firestore.FieldValue.arrayUnion(today)
-        });
     }
+
+    await db.collection('users').doc(currentUser.uid).update({
+        activityLogs: firebase.firestore.FieldValue.arrayUnion(logEntry),
+        logDates: firebase.firestore.FieldValue.arrayUnion(today)
+    });
+
+    pendingActivity = null;
+    pendingTimestamp = null;
+    selectedStatus = null;
+
+    activityText.textContent = '';
+    completionSection.classList.remove('visible');
+    randomizeBtn.disabled = false;
 
     renderAccountability();
     renderCalendar();
@@ -307,12 +366,10 @@ function renderCalendar() {
 
     let html = '';
 
-    // Empty cells before the 1st
     for (let i = 0; i < firstDayOfWeek; i++) {
         html += '<div class="calendar-cell empty"></div>';
     }
 
-    // Day cells
     for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${calendarYear}-${pad(calendarMonth + 1)}-${pad(day)}`;
         const isActive = logSet.has(dateStr);
@@ -322,10 +379,55 @@ function renderCalendar() {
         if (isActive) cls += ' active';
         if (isToday) cls += ' today';
 
-        html += `<div class="${cls}">${day}</div>`;
+        html += `<div class="${cls}" data-date="${dateStr}">${day}</div>`;
     }
 
     calendarDays.innerHTML = html;
+    dayLogDisplay.classList.remove('visible');
+    selectedCalendarDate = null;
+
+    calendarDays.querySelectorAll('.calendar-cell.active').forEach(cell => {
+        cell.addEventListener('click', () => {
+            showDayLog(cell.getAttribute('data-date'));
+        });
+    });
+}
+
+function showDayLog(dateStr) {
+    if (selectedCalendarDate === dateStr) {
+        dayLogDisplay.classList.remove('visible');
+        selectedCalendarDate = null;
+        return;
+    }
+
+    const logs = (userData.activityLogs || []).filter(log => log.date === dateStr);
+    if (logs.length === 0) {
+        dayLogDisplay.classList.remove('visible');
+        selectedCalendarDate = null;
+        return;
+    }
+
+    const [year, month, day] = dateStr.split('-');
+    const dateLabel = `${MONTH_NAMES[parseInt(month, 10) - 1]} ${parseInt(day, 10)}, ${year}`;
+
+    let html = `<h4 class="day-log-title">${dateLabel}</h4><div class="day-log-entries">`;
+
+    logs.forEach(log => {
+        const time = new Date(log.timestamp);
+        const timeStr = time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        const icon = log.status === 'completed' ? '✓' : '✗';
+        const iconClass = log.status === 'completed' ? 'log-check' : 'log-x';
+        html += `<div class="day-log-entry">
+            <span class="log-time">${timeStr}</span>
+            <span class="log-activity">${log.activity}</span>
+            <span class="${iconClass}">${icon}</span>
+        </div>`;
+    });
+
+    html += '</div>';
+    dayLogDisplay.innerHTML = html;
+    dayLogDisplay.classList.add('visible');
+    selectedCalendarDate = dateStr;
 }
 
 prevMonthBtn.addEventListener('click', () => {
